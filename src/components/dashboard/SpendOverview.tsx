@@ -146,13 +146,12 @@ export function SpendOverview({ filters }: SpendOverviewProps) {
             />
           </div>
         </div>
-      </div>
 
       {/* Charts Section */}
-        <div className="chart-grid">
-          <div className="animate-scale-in" style={{ animationDelay: '0.5s' }}>
-        {/* Category Spend Breakdown */}
-            <Card className="chart-container group hover:shadow-xl transition-all duration-500">
+      <div className="chart-grid">
+        <div className="animate-scale-in" style={{ animationDelay: '0.5s' }}>
+          {/* Category Spend Breakdown */}
+          <Card className="chart-container group hover:shadow-xl transition-all duration-500">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-foreground">Spend by Category</h3>
             <div className="text-sm text-muted-foreground">
@@ -196,19 +195,18 @@ export function SpendOverview({ filters }: SpendOverviewProps) {
               </div>
             ))}
           </div>
-            </Card>
-          </div>
+          </Card>
+        </div>
 
-          <div className="animate-scale-in" style={{ animationDelay: '0.6s' }}>
-
-        {/* Top Vendors */}
-        <Card className="chart-container group hover:shadow-xl transition-all duration-500">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">Top 5 Vendors by Spend</h3>
-            <Building2 className="h-5 w-5 text-primary" />
-          </div>
-          
-          <div className="h-64 transition-all duration-300 group-hover:scale-[1.02]">
+        <div className="animate-scale-in" style={{ animationDelay: '0.6s' }}>
+          {/* Top Vendors */}
+          <Card className="chart-container group hover:shadow-xl transition-all duration-500">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">Top 5 Vendors by Spend</h3>
+              <Building2 className="h-5 w-5 text-primary" />
+            </div>
+            
+            <div className="h-64 transition-all duration-300 group-hover:scale-[1.02]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={topVendors} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -241,26 +239,26 @@ export function SpendOverview({ filters }: SpendOverviewProps) {
                 />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-          
-              <div className="mt-4 space-y-2">
-                {topVendors.slice(0, 3).map((vendor, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between text-sm p-3 rounded-lg bg-secondary/20 hover:bg-secondary/40 transition-all duration-300 cursor-pointer group"
-                  >
-                    <span className="font-medium group-hover:text-primary transition-colors">{vendor.name}</span>
-                    <div className="flex items-center gap-4">
-                      <span className="text-muted-foreground">{vendor.contracts} contracts</span>
-                      <span className="text-success font-medium">{vendor.performance}% performance</span>
-                      <span className="font-bold group-hover:text-primary transition-colors">{formatCurrency(vendor.spend)}</span>
-                    </div>
+            </div>
+            
+            <div className="mt-4 space-y-2">
+              {topVendors.slice(0, 3).map((vendor, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between text-sm p-3 rounded-lg bg-secondary/20 hover:bg-secondary/40 transition-all duration-300 cursor-pointer group"
+                >
+                  <span className="font-medium group-hover:text-primary transition-colors">{vendor.name}</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-muted-foreground">{vendor.contracts} contracts</span>
+                    <span className="text-success font-medium">{vendor.performance}% performance</span>
+                    <span className="font-bold group-hover:text-primary transition-colors">{formatCurrency(vendor.spend)}</span>
                   </div>
-                ))}
-              </div>
-            </Card>
-          </div>
+                </div>
+              ))}
+            </div>
+          </Card>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
