@@ -167,27 +167,43 @@ export function useProcurementData() {
     if (!data || !insights) return
 
     try {
-      const { data: reportData, error } = await supabase.functions.invoke(
+      const currentDate = new Date().toISOString().split('T')[0];
+      const reportData = {
+        format,
+        analysisData: data,
+        insights,
+        metadata: {
+          generatedDate: currentDate,
+          filters: {
+            dateRange: 'Applied filters data', // You can pass actual filters here
+            totalRecords: data.summary.totalOrders,
+            totalSpend: data.summary.totalSpend
+          },
+          companyInfo: {
+            name: "Your Company",
+            logo: "/company-logo.png", // Add your company logo
+            reportTitle: `Procurement Analysis Report - ${currentDate}`
+          }
+        }
+      };
+
+      const { data: reportBlob, error } = await supabase.functions.invoke(
         'export-report',
         {
-          body: {
-            format,
-            analysisData: data,
-            insights
-          }
+          body: reportData
         }
       )
 
       if (error) throw error
 
-      // Create download link
-      const blob = new Blob([reportData], {
+      // Create download link with proper filename
+      const blob = new Blob([reportBlob], {
         type: format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       })
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `procurement-analysis.${format === 'pdf' ? 'pdf' : 'xlsx'}`
+      a.download = `procurement-analysis-${currentDate}.${format === 'pdf' ? 'pdf' : 'xlsx'}`
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)

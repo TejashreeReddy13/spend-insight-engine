@@ -78,7 +78,7 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
   };
 
   return (
-    <Card className="dashboard-card p-6">
+    <Card className="dashboard-card p-6 animate-fade-in hover:shadow-lg transition-all duration-300">
       <div className="space-y-4">
         {/* Filter Controls */}
         <div className="flex items-center gap-2 mb-4">
@@ -151,14 +151,14 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
               <Badge 
                 key={key} 
                 variant="secondary" 
-                className="flex items-center gap-1 px-3 py-1 hover:bg-secondary/80 transition-colors"
+                className="filter-badge flex items-center gap-1 px-3 py-1 hover:bg-secondary/80 transition-all duration-300 animate-scale-in"
               >
                 <span className="capitalize">{key}:</span>
                 <span className="font-medium">{value}</span>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-auto w-auto p-0 hover:bg-transparent"
+                  className="h-auto w-auto p-0 hover:bg-transparent hover:text-destructive transition-colors duration-200"
                   onClick={() => clearFilter(key as keyof FilterState)}
                 >
                   <X className="h-3 w-3" />
@@ -169,7 +169,7 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
               variant="outline"
               size="sm"
               onClick={clearAllFilters}
-              className="ml-2 h-7 text-xs"
+              className="ml-2 h-7 text-xs hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
             >
               Clear All
             </Button>

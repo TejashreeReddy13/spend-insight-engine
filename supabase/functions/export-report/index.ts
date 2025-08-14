@@ -9,6 +9,15 @@ interface ExportRequest {
   format: 'pdf' | 'excel'
   analysisData: any
   insights: any[]
+  metadata?: {
+    generatedDate: string
+    filters: any
+    companyInfo: {
+      name: string
+      logo: string
+      reportTitle: string
+    }
+  }
 }
 
 serve(async (req) => {
@@ -17,7 +26,7 @@ serve(async (req) => {
   }
 
   try {
-    const { format, analysisData, insights }: ExportRequest = await req.json()
+    const { format, analysisData, insights, metadata }: ExportRequest = await req.json()
 
     if (format === 'pdf') {
       const pdfData = await generatePDFReport(analysisData, insights)
