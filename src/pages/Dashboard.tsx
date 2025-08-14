@@ -64,11 +64,11 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <SpendOverview />
+            <SpendOverview filters={filters} />
           </TabsContent>
 
           <TabsContent value="variance" className="space-y-6">
-            <PriceVarianceAnalysis />
+            <PriceVarianceAnalysis filters={filters} />
           </TabsContent>
 
           <TabsContent value="maverick" className="space-y-6">
@@ -86,21 +86,21 @@ export default function Dashboard() {
                     approved vendor agreements. Implementation in progress.
                   </p>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 w-full max-w-2xl">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 w-full max-w-2xl">
                   <div className="text-center p-4 bg-secondary/30 rounded-lg">
-                    <div className="text-2xl font-bold text-warning">23%</div>
+                    <div className="text-2xl font-bold text-warning">Coming Soon</div>
                     <div className="text-sm text-muted-foreground">Off-Contract Spend</div>
                   </div>
                   <div className="text-center p-4 bg-secondary/30 rounded-lg">
-                    <div className="text-2xl font-bold text-danger">47</div>
+                    <div className="text-2xl font-bold text-danger">Coming Soon</div>
                     <div className="text-sm text-muted-foreground">Unauthorized Vendors</div>
                   </div>
                   <div className="text-center p-4 bg-secondary/30 rounded-lg">
-                    <div className="text-2xl font-bold text-primary">$450K</div>
+                    <div className="text-2xl font-bold text-primary">Coming Soon</div>
                     <div className="text-sm text-muted-foreground">Potential Savings</div>
                   </div>
                   <div className="text-center p-4 bg-secondary/30 rounded-lg">
-                    <div className="text-2xl font-bold text-success">89%</div>
+                    <div className="text-2xl font-bold text-success">Coming Soon</div>
                     <div className="text-sm text-muted-foreground">Compliance Target</div>
                   </div>
                 </div>
@@ -109,7 +109,7 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-6">
-            <CostSavingsInsights />
+            <CostSavingsInsights filters={filters} />
           </TabsContent>
         </Tabs>
       </main>
