@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,73 +11,50 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from "lucide-react";
+import { useProcurementData } from "@/hooks/useProcurementData";
 
-interface InsightProps {
-  id: string;
-  title: string;
-  description: string;
-  potentialSaving: number;
-  priority: "high" | "medium" | "low";
+interface FilterState {
+  vendor: string;
   category: string;
-  implementationTime: string;
-  impact: "immediate" | "short-term" | "long-term";
-  status: "new" | "in-progress" | "completed";
+  region: string;
+  dateRange: string;
 }
 
-const insights: InsightProps[] = [
-  {
-    id: "1",
-    title: "Vendor Consolidation Opportunity",
-    description: "Consolidate office supplies procurement from 8 vendors to 3 preferred vendors for 15% volume discount.",
-    potentialSaving: 185000,
-    priority: "high",
-    category: "Vendor Management",
-    implementationTime: "2-3 weeks",
-    impact: "immediate",
-    status: "new"
-  },
-  {
-    id: "2", 
-    title: "Bulk Order Optimization",
-    description: "IT equipment purchases show potential for quarterly bulk ordering to achieve better pricing tiers.",
-    potentialSaving: 320000,
-    priority: "high", 
-    category: "Purchase Strategy",
-    implementationTime: "1 month",
-    impact: "short-term",
-    status: "new"
-  },
-  {
-    id: "3",
-    title: "Contract Renegotiation",
-    description: "3 major contracts expiring in Q2 with pricing 12% above market rates.",
-    potentialSaving: 240000,
-    priority: "medium",
-    category: "Contract Management",
-    implementationTime: "6-8 weeks", 
-    impact: "long-term",
-    status: "in-progress"
-  },
-  {
-    id: "4",
-    title: "Maverick Spend Reduction",
-    description: "23% of marketing spend is off-contract. Implementing approval workflows could reduce costs.",
-    potentialSaving: 95000,
-    priority: "medium",
-    category: "Process Improvement",
-    implementationTime: "3-4 weeks",
-    impact: "immediate",
-    status: "new"
-  }
-];
+interface CostSavingsInsightsProps {
+  filters: FilterState;
+}
 
-export function CostSavingsInsights() {
+export function CostSavingsInsights({ filters }: CostSavingsInsightsProps) {
+  const { data, insights, loading, error, fetchData, exportReport } = useProcurementData();
+
+  useEffect(() => {
+    fetchData(filters);
+  }, [filters, fetchData]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !insights) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-muted-foreground">Failed to load insights: {error}</p>
+      </div>
+    );
+  }
+
   const totalPotentialSavings = insights.reduce((sum, insight) => sum + insight.potentialSaving, 0);
   
   const getPriorityIcon = (priority: string) => {
-    switch (priority) {
+    switch (priority.toLowerCase()) {
+      case "critical":
       case "high": return <AlertTriangle className="h-4 w-4 text-danger" />;
       case "medium": return <Clock className="h-4 w-4 text-warning" />;
       default: return <CheckCircle className="h-4 w-4 text-success" />;
@@ -84,7 +62,8 @@ export function CostSavingsInsights() {
   };
 
   const getPriorityColor = (priority: string) => {
-    switch (priority) {
+    switch (priority.toLowerCase()) {
+      case "critical":
       case "high": return "border-l-danger bg-danger/5";
       case "medium": return "border-l-warning bg-warning/5";
       default: return "border-l-success bg-success/5";
@@ -92,7 +71,8 @@ export function CostSavingsInsights() {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
+      case "identified":
       case "new": return <Badge className="bg-primary/10 text-primary">New</Badge>;
       case "in-progress": return <Badge className="bg-warning/10 text-warning">In Progress</Badge>;
       case "completed": return <Badge className="bg-success/10 text-success">Completed</Badge>;
@@ -101,6 +81,22 @@ export function CostSavingsInsights() {
   };
 
   const formatCurrency = (value: number) => `$${(value / 1000).toFixed(0)}K`;
+
+  const handleExportPDF = async () => {
+    try {
+      await exportReport('pdf');
+    } catch (err) {
+      console.error('Failed to export PDF:', err);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      await exportReport('excel');
+    } catch (err) {
+      console.error('Failed to export Excel:', err);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -195,8 +191,11 @@ export function CostSavingsInsights() {
             </p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline">
-              Generate Report
+            <Button variant="outline" onClick={handleExportPDF}>
+              Export PDF
+            </Button>
+            <Button variant="outline" onClick={handleExportExcel}>
+              Export Excel
             </Button>
             <Button className="bg-gradient-to-r from-success to-success-light text-success-foreground hover:shadow-lg">
               <TrendingUp className="h-4 w-4 mr-2" />

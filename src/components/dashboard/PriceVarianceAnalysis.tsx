@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,26 +12,61 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from "recharts";
-import { AlertTriangle, TrendingUp, DollarSign, Package } from "lucide-react";
+import { AlertTriangle, TrendingUp, DollarSign, Package, Loader2 } from "lucide-react";
+import { useProcurementData } from "@/hooks/useProcurementData";
 
-const priceVarianceData = [
-  { item: "Office Chairs", avgPrice: 250, variance: 15, supplier: "Office Pro", region: "North America", quantity: 120 },
-  { item: "Laptops", avgPrice: 1200, variance: 8, supplier: "Tech Corp", region: "Europe", quantity: 50 },
-  { item: "Printer Paper", avgPrice: 45, variance: 22, supplier: "Paper Co", region: "Asia Pacific", quantity: 500 },
-  { item: "Desk Lamps", avgPrice: 85, variance: 18, supplier: "Lighting Ltd", region: "North America", quantity: 80 },
-  { item: "Keyboards", avgPrice: 75, variance: 12, supplier: "Tech Corp", region: "Europe", quantity: 200 },
-  { item: "Mouse Pads", avgPrice: 15, variance: 25, supplier: "Office Pro", region: "Asia Pacific", quantity: 300 },
-  { item: "Monitors", avgPrice: 350, variance: 10, supplier: "Display Inc", region: "North America", quantity: 75 },
-  { item: "Cable Organizers", avgPrice: 20, variance: 30, supplier: "Cable Co", region: "Europe", quantity: 150 },
-  { item: "Staplers", avgPrice: 35, variance: 20, supplier: "Office Supplies", region: "Asia Pacific", quantity: 100 },
-  { item: "Whiteboard Markers", avgPrice: 25, variance: 28, supplier: "Marker Corp", region: "North America", quantity: 250 }
-];
+interface FilterState {
+  vendor: string;
+  category: string;
+  region: string;
+  dateRange: string;
+}
 
-const highVarianceItems = priceVarianceData.filter(item => item.variance > 20).length;
-const totalItemsAnalyzed = priceVarianceData.length;
-const avgVariance = Math.round(priceVarianceData.reduce((sum, item) => sum + item.variance, 0) / priceVarianceData.length);
+interface PriceVarianceAnalysisProps {
+  filters: FilterState;
+}
 
-export function PriceVarianceAnalysis() {
+export function PriceVarianceAnalysis({ filters }: PriceVarianceAnalysisProps) {
+  const { data, loading, error, fetchData } = useProcurementData();
+
+  useEffect(() => {
+    fetchData(filters);
+  }, [filters, fetchData]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-muted-foreground">Failed to load data: {error}</p>
+      </div>
+    );
+  }
+
+  const priceVarianceData = data.priceVariance.map((item, index) => ({
+    item: item.item,
+    avgPrice: item.avgPrice,
+    minPrice: item.minPrice,
+    maxPrice: item.maxPrice,
+    variance: item.variance,
+    totalQuantity: item.totalQuantity,
+    vendors: item.vendors,
+    regions: item.regions,
+    supplier: item.vendors[0] || "Multiple",
+    region: item.regions[0] || "Multiple",
+    quantity: item.totalQuantity
+  }));
+
+  const highVarianceItems = priceVarianceData.filter(item => item.variance > 20).length;
+  const totalItemsAnalyzed = priceVarianceData.length;
+  const avgVariance = Math.round(priceVarianceData.reduce((sum, item) => sum + item.variance, 0) / priceVarianceData.length);
+
   const formatCurrency = (value: number) => `$${value}`;
   
   const getVarianceColor = (variance: number) => {

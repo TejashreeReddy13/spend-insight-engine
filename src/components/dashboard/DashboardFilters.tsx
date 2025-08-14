@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Filter, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { X, Filter } from "lucide-react";
+import { useProcurementData } from "@/hooks/useProcurementData";
 
 interface FilterState {
   vendor: string;
@@ -24,132 +25,157 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
     dateRange: "last-30-days"
   });
 
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [vendorOptions, setVendorOptions] = useState<string[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
+  const [regionOptions, setRegionOptions] = useState<string[]>([]);
+
+  const { getVendorOptions, getCategoryOptions, getRegionOptions } = useProcurementData();
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      try {
+        const [vendors, categories, regions] = await Promise.all([
+          getVendorOptions(),
+          getCategoryOptions(),
+          getRegionOptions()
+        ]);
+        setVendorOptions(vendors);
+        setCategoryOptions(categories);
+        setRegionOptions(regions);
+      } catch (error) {
+        console.error("Failed to load filter options:", error);
+      }
+    };
+
+    loadOptions();
+  }, [getVendorOptions, getCategoryOptions, getRegionOptions]);
+
+  const activeFilters = Object.entries(filters).filter(([key, value]) => 
+    value && key !== "dateRange"
+  );
 
   const updateFilter = (key: keyof FilterState, value: string) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFiltersChange(newFilters);
-    
-    // Update active filters for display
-    const newActiveFilters = Object.entries(newFilters)
-      .filter(([_, val]) => val && val !== "")
-      .map(([key, val]) => `${key}: ${val}`);
-    setActiveFilters(newActiveFilters);
   };
 
-  const clearFilter = (filterKey: string) => {
-    const key = filterKey.split(":")[0] as keyof FilterState;
-    updateFilter(key, "");
+  const clearFilter = (key: keyof FilterState) => {
+    const newFilters = { ...filters, [key]: "" };
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
   };
 
   const clearAllFilters = () => {
-    const clearedFilters = {
+    const newFilters = {
       vendor: "",
       category: "",
       region: "",
       dateRange: "last-30-days"
     };
-    setFilters(clearedFilters);
-    setActiveFilters([]);
-    onFiltersChange(clearedFilters);
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
   };
 
   return (
-    <Card className="dashboard-card p-4 mb-6">
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Filter className="h-4 w-4" />
-          Filters:
+    <Card className="dashboard-card p-6">
+      <div className="space-y-4">
+        {/* Filter Controls */}
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Filters</h3>
         </div>
-        
-        <div className="flex flex-wrap gap-3 flex-1">
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Select value={filters.vendor} onValueChange={(value) => updateFilter("vendor", value)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Select Vendor" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All Vendors</SelectItem>
-              <SelectItem value="acme-corp">ACME Corp</SelectItem>
-              <SelectItem value="global-supplies">Global Supplies</SelectItem>
-              <SelectItem value="tech-solutions">Tech Solutions Inc</SelectItem>
-              <SelectItem value="office-depot">Office Depot</SelectItem>
-              <SelectItem value="industrial-parts">Industrial Parts Co</SelectItem>
+              {vendorOptions.map((vendor) => (
+                <SelectItem key={vendor} value={vendor}>
+                  {vendor}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           <Select value={filters.category} onValueChange={(value) => updateFilter("category", value)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All Categories</SelectItem>
-              <SelectItem value="office-supplies">Office Supplies</SelectItem>
-              <SelectItem value="it-equipment">IT Equipment</SelectItem>
-              <SelectItem value="industrial">Industrial</SelectItem>
-              <SelectItem value="marketing">Marketing</SelectItem>
-              <SelectItem value="facilities">Facilities</SelectItem>
+              {categoryOptions.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           <Select value={filters.region} onValueChange={(value) => updateFilter("region", value)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Select Region" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All Regions</SelectItem>
-              <SelectItem value="north-america">North America</SelectItem>
-              <SelectItem value="europe">Europe</SelectItem>
-              <SelectItem value="asia-pacific">Asia Pacific</SelectItem>
-              <SelectItem value="latin-america">Latin America</SelectItem>
+              {regionOptions.map((region) => (
+                <SelectItem key={region} value={region}>
+                  {region}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           <Select value={filters.dateRange} onValueChange={(value) => updateFilter("dateRange", value)}>
-            <SelectTrigger className="w-[180px]">
-              <CalendarDays className="h-4 w-4 mr-2" />
-              <SelectValue />
+            <SelectTrigger>
+              <SelectValue placeholder="Select Date Range" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="last-7-days">Last 7 Days</SelectItem>
               <SelectItem value="last-30-days">Last 30 Days</SelectItem>
               <SelectItem value="last-90-days">Last 90 Days</SelectItem>
               <SelectItem value="last-year">Last Year</SelectItem>
-              <SelectItem value="ytd">Year to Date</SelectItem>
+              <SelectItem value="all-time">All Time</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
+        {/* Active Filters */}
         {activeFilters.length > 0 && (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={clearAllFilters}
-            className="whitespace-nowrap"
-          >
-            Clear All
-          </Button>
+          <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border-light">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {activeFilters.map(([key, value]) => (
+              <Badge 
+                key={key} 
+                variant="secondary" 
+                className="flex items-center gap-1 px-3 py-1 hover:bg-secondary/80 transition-colors"
+              >
+                <span className="capitalize">{key}:</span>
+                <span className="font-medium">{value}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto w-auto p-0 hover:bg-transparent"
+                  onClick={() => clearFilter(key as keyof FilterState)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearAllFilters}
+              className="ml-2 h-7 text-xs"
+            >
+              Clear All
+            </Button>
+          </div>
         )}
       </div>
-
-      {activeFilters.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border-light">
-          <span className="text-sm text-muted-foreground">Active filters:</span>
-          {activeFilters.map((filter) => (
-            <Badge 
-              key={filter} 
-              variant="secondary" 
-              className="flex items-center gap-1"
-            >
-              {filter}
-              <X 
-                className="h-3 w-3 cursor-pointer hover:text-danger" 
-                onClick={() => clearFilter(filter)}
-              />
-            </Badge>
-          ))}
-        </div>
-      )}
     </Card>
   );
 }

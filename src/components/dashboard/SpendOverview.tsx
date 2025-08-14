@@ -1,27 +1,57 @@
+import { useEffect } from "react";
 import { KPICard } from "./KPICard";
 import { Card } from "@/components/ui/card";
-import { DollarSign, Users, Package, TrendingUp, Building2 } from "lucide-react";
+import { DollarSign, Users, Package, TrendingUp, Building2, Loader2 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { useProcurementData } from "@/hooks/useProcurementData";
 
-const categoryData = [
-  { name: "IT Equipment", value: 2845000, color: "hsl(var(--chart-1))" },
-  { name: "Office Supplies", value: 1230000, color: "hsl(var(--chart-2))" },
-  { name: "Industrial", value: 987000, color: "hsl(var(--chart-3))" },
-  { name: "Marketing", value: 654000, color: "hsl(var(--chart-4))" },
-  { name: "Facilities", value: 432000, color: "hsl(var(--chart-5))" },
-];
+interface FilterState {
+  vendor: string;
+  category: string;
+  region: string;
+  dateRange: string;
+}
 
-const topVendors = [
-  { name: "ACME Corp", spend: 1850000, contracts: 12, performance: 95 },
-  { name: "Global Supplies", spend: 1420000, contracts: 8, performance: 88 },
-  { name: "Tech Solutions", spend: 980000, contracts: 15, performance: 92 },
-  { name: "Office Depot", spend: 760000, contracts: 6, performance: 85 },
-  { name: "Industrial Co", spend: 650000, contracts: 9, performance: 90 },
-];
+interface SpendOverviewProps {
+  filters: FilterState;
+}
 
-export function SpendOverview() {
-  const totalSpend = categoryData.reduce((sum, item) => sum + item.value, 0);
+export function SpendOverview({ filters }: SpendOverviewProps) {
+  const { data, loading, error, fetchData } = useProcurementData();
+
+  useEffect(() => {
+    fetchData(filters);
+  }, [filters, fetchData]);
   const formatCurrency = (value: number) => `$${(value / 1000000).toFixed(1)}M`;
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-muted-foreground">Failed to load data: {error}</p>
+      </div>
+    );
+  }
+
+  const categoryData = data.spendByCategory.map((cat, index) => ({
+    name: cat.category,
+    value: cat.spend,
+    color: `hsl(var(--chart-${(index % 5) + 1}))`
+  }));
+
+  const topVendors = data.topVendors.slice(0, 5).map(vendor => ({
+    name: vendor.vendor,
+    spend: vendor.spend,
+    contracts: vendor.orders,
+    performance: vendor.performanceScore
+  }));
 
   return (
     <div className="space-y-6">
@@ -29,36 +59,36 @@ export function SpendOverview() {
       <div className="kpi-grid">
         <KPICard
           title="Total Spend"
-          value={formatCurrency(totalSpend)}
-          subtitle="Last 30 Days"
+          value={formatCurrency(data.summary.totalSpend)}
+          subtitle="Filtered Period"
           change={8.5}
-          changeLabel="vs prev month"
+          changeLabel="vs prev period"
           icon={<DollarSign className="h-5 w-5" />}
           variant="success"
         />
         
         <KPICard
           title="Active Vendors"
-          value={127}
-          subtitle="Contracted Suppliers"
+          value={data.summary.uniqueVendors}
+          subtitle="Unique Suppliers"
           change={-3.2}
-          changeLabel="vendor consolidation"
+          changeLabel="vendor optimization"
           icon={<Users className="h-5 w-5" />}
         />
         
         <KPICard
           title="Purchase Orders"
-          value="1,284"
-          subtitle="This Month"
+          value={data.summary.totalOrders.toLocaleString()}
+          subtitle="Total Orders"
           change={12.8}
-          changeLabel="vs prev month"
+          changeLabel="vs prev period"
           icon={<Package className="h-5 w-5" />}
         />
         
         <KPICard
-          title="Cost Savings"
-          value="$1.2M"
-          subtitle="YTD Achieved"
+          title="Potential Savings"
+          value={formatCurrency(data.summary.potentialSavings)}
+          subtitle="Identified Opportunities"
           change={24.5}
           changeLabel="above target"
           icon={<TrendingUp className="h-5 w-5" />}
@@ -73,7 +103,7 @@ export function SpendOverview() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-foreground">Spend by Category</h3>
             <div className="text-sm text-muted-foreground">
-              Total: {formatCurrency(totalSpend)}
+              Total: {formatCurrency(data.summary.totalSpend)}
             </div>
           </div>
           
