@@ -6,7 +6,9 @@ import {
   Settings, 
   Bell,
   BarChart3,
-  Calendar
+  Calendar,
+  Moon,
+  Sun
 } from "lucide-react";
 
 export function DashboardHeader() {
@@ -18,8 +20,8 @@ export function DashboardHeader() {
   });
 
   return (
-    <div className="dashboard-header px-6 py-4">
-      <div className="flex items-center justify-between">
+    <div className="dashboard-header px-4 sm:px-6 py-4 transition-all duration-300">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left Section */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
@@ -27,10 +29,10 @@ export function DashboardHeader() {
               <BarChart3 className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-nav-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold text-nav-foreground">
                 Procurement Analytics
               </h1>
-              <p className="text-sm text-nav-foreground/70">
+              <p className="text-sm text-nav-foreground/70 hidden sm:block">
                 Spend & Savings Analysis Dashboard
               </p>
             </div>
@@ -52,33 +54,36 @@ export function DashboardHeader() {
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-nav-foreground hover:bg-nav-hover"
+              className="text-nav-foreground hover:bg-nav-hover transition-all duration-300"
             >
               <Bell className="h-4 w-4" />
+              <span className="sr-only">Notifications</span>
             </Button>
             
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-nav-foreground hover:bg-nav-hover"
+              className="text-nav-foreground hover:bg-nav-hover transition-all duration-300"
             >
               <RefreshCw className="h-4 w-4" />
+              <span className="sr-only">Refresh data</span>
             </Button>
             
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-nav-foreground hover:bg-nav-hover"
+              className="text-nav-foreground hover:bg-nav-hover transition-all duration-300"
             >
               <Settings className="h-4 w-4" />
+              <span className="sr-only">Settings</span>
             </Button>
             
             <Button 
               size="sm"
-              className="bg-success hover:bg-success-dark text-success-foreground shadow-md"
+              className="bg-success hover:bg-success-dark text-success-foreground shadow-md export-button transition-all duration-300 hover:shadow-lg"
             >
               <Download className="h-4 w-4 mr-2" />
-              Export Report
+              <span className="hidden sm:inline">Export Report</span>
             </Button>
           </div>
         </div>

@@ -75,18 +75,6 @@ All colors MUST be HSL.
     --input-border: 220 8% 85%;
     --ring: 210 85% 45%;
 
-    /* Shadows & Effects */
-    --shadow-sm: 0 1px 2px 0 hsla(215, 25%, 20%, 0.05);
-    --shadow-md: 0 4px 6px -1px hsla(215, 25%, 20%, 0.1);
-    --shadow-lg: 0 10px 15px -3px hsla(215, 25%, 20%, 0.1);
-    --shadow-card: 0 2px 8px 0 hsla(215, 25%, 20%, 0.08);
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-teal: linear-gradient(135deg, hsl(var(--teal)), hsl(var(--teal-light)));
-    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(var(--success-light)));
-    --gradient-dashboard: linear-gradient(180deg, hsl(var(--background)), hsl(var(--dashboard-bg)));
-    
     /* Chart Colors for Data Visualization */
     --chart-1: 210 85% 45%;
     --chart-2: 180 65% 45%;
@@ -98,20 +86,14 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
     /* Enhanced Dashboard Styles */
     --dashboard-gradient: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1));
     --chart-gradient-1: linear-gradient(135deg, hsl(var(--chart-1)), hsl(var(--chart-1) / 0.8));
@@ -175,56 +157,157 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Dashboard Layout Components */
+  /* Dashboard Layout Enhancements */
   .dashboard-container {
-    @apply min-h-screen bg-gradient-to-br from-background to-dashboard-bg;
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--secondary) / 0.3));
+    min-height: 100vh;
   }
-  
-  .dashboard-header {
-    @apply bg-nav-bg text-nav-foreground shadow-md border-b border-border;
-  }
-  
+
   .dashboard-card {
-    @apply bg-card rounded-lg shadow-card border border-border/50 hover:shadow-lg transition-all duration-300;
+    @apply transition-all duration-300 hover:shadow-lg border-border/50;
+    background: hsl(var(--card));
+    backdrop-filter: blur(10px);
   }
-  
-  .kpi-card {
-    @apply dashboard-card p-6 hover:scale-[1.02] cursor-pointer;
+
+  .dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
   }
-  
-  /* Button Variants */
-  .btn-primary {
-    @apply bg-gradient-to-r from-primary to-primary-light text-primary-foreground hover:from-primary-dark hover:to-primary shadow-md hover:shadow-lg;
-  }
-  
-  .btn-success {
-    @apply bg-gradient-to-r from-success to-success-light text-success-foreground hover:from-success-dark hover:to-success shadow-md hover:shadow-lg;
-  }
-  
-  .btn-teal {
-    @apply bg-gradient-to-r from-teal to-teal-light text-white hover:from-teal-dark hover:to-teal shadow-md hover:shadow-lg;
-  }
-  
-  /* Chart & Visualization Styles */
+
   .chart-container {
-    @apply bg-card rounded-lg shadow-card border border-border/50 p-4;
+    @apply dashboard-card p-6;
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.95));
   }
-  
-  /* Animation Classes */
-  .fade-in {
-    @apply animate-in fade-in-0 duration-500;
-  }
-  
-  .slide-up {
-    @apply animate-in slide-in-from-bottom-4 duration-500;
-  }
-  
-  /* Responsive Grid */
+
   .kpi-grid {
-    @apply grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-4;
   }
-  
+
   .chart-grid {
-    @apply grid gap-6 grid-cols-1 lg:grid-cols-2;
+    @apply grid gap-6 lg:grid-cols-2;
+  }
+
+  /* Enhanced KPI Cards */
+  .kpi-card {
+    @apply relative overflow-hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--chart-gradient-1);
+  }
+
+  .kpi-card.success::before {
+    background: hsl(var(--success));
+  }
+
+  .kpi-card.warning::before {
+    background: hsl(var(--warning));
+  }
+
+  .kpi-card.danger::before {
+    background: hsl(var(--destructive));
+  }
+
+  /* Chart Animations */
+  .chart-container .recharts-wrapper {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  .chart-container .recharts-pie-sector {
+    transition: var(--transition-fast);
+  }
+
+  .chart-container .recharts-pie-sector:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+  }
+
+  .chart-container .recharts-bar {
+    transition: var(--transition-fast);
+  }
+
+  .chart-container .recharts-bar:hover {
+    filter: brightness(1.1);
+  }
+
+  /* Loading States */
+  .loading-overlay {
+    @apply absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .kpi-grid {
+      @apply grid-cols-1 sm:grid-cols-2;
+    }
+    
+    .chart-grid {
+      @apply grid-cols-1;
+    }
+    
+    .dashboard-card {
+      @apply mx-2;
+    }
+  }
+
+  /* Filter Enhancements */
+  .filter-badge {
+    @apply transition-all duration-200 hover:scale-105;
+  }
+
+  .filter-badge:hover {
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
+  }
+
+  /* Insight Cards */
+  .insight-card {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+
+  .insight-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .insight-card.priority-high {
+    border-left: 4px solid hsl(var(--destructive));
+  }
+
+  .insight-card.priority-medium {
+    border-left: 4px solid hsl(var(--warning));
+  }
+
+  .insight-card.priority-low {
+    border-left: 4px solid hsl(var(--success));
+  }
+
+  /* Export Button Enhancements */
+  .export-button {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+
+  .export-button:hover {
+    box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
+  }
+
+  .export-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .export-button:hover::before {
+    left: 100%;
   }
 }
