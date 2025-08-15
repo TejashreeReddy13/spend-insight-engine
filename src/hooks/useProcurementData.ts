@@ -213,12 +213,12 @@ export function useProcurementData() {
   const getVendorOptions = async () => {
     const { data, error } = await supabase
       .from('procurement_orders')
-      .select('vendor')
-      .order('vendor')
+      .select('vendor_name')
+      .order('vendor_name')
 
     if (error) throw error
 
-    return [...new Set(data.map(row => row.vendor))].sort()
+    return [...new Set(data.map(row => row.vendor_name))].sort()
   }
 
   const getCategoryOptions = async () => {

@@ -14,9 +14,9 @@ export type Database = {
     Tables: {
       procurement_orders: {
         Row: {
-          id: string
+          order_id: string
           order_date: string
-          vendor: string
+          vendor_name: string
           category: string
           region: string
           item_name: string
@@ -29,9 +29,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          id?: string
+          order_id?: string
           order_date: string
-          vendor: string
+          vendor_name: string
           category: string
           region: string
           item_name: string
@@ -44,9 +44,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          id?: string
+          order_id?: string
           order_date?: string
-          vendor?: string
+          vendor_name?: string
           category?: string
           region?: string
           item_name?: string

@@ -7,8 +7,8 @@ const corsHeaders = {
 }
 
 interface ProcurementOrder {
-  id: string
-  vendor: string
+  order_id: string
+  vendor_name: string
   category: string
   item_name: string
   quantity: number
@@ -54,7 +54,7 @@ serve(async (req) => {
       .select('*')
 
     if (filters.vendor) {
-      query = query.eq('vendor', filters.vendor)
+      query = query.eq('vendor_name', filters.vendor)
     }
     if (filters.category) {
       query = query.eq('category', filters.category)
@@ -104,7 +104,7 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
 
   // Spend by vendor
   const vendorSpend = orders.reduce((acc, order) => {
-    const vendor = order.vendor
+    const vendor = order.vendor_name
     const spend = parseFloat(order.total_amount.toString())
     if (!acc[vendor]) {
       acc[vendor] = { 
@@ -158,7 +158,7 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
     }
     acc[item].push({
       price: order.unit_price,
-      vendor: order.vendor,
+      vendor_name: order.vendor_name,
       region: order.region,
       quantity: order.quantity,
       order_date: order.order_date
@@ -183,7 +183,7 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
       maxPrice,
       variance,
       totalQuantity: prices.reduce((sum, p) => sum + p.quantity, 0),
-      vendors: [...new Set(prices.map(p => p.vendor))],
+      vendors: [...new Set(prices.map(p => p.vendor_name))],
       regions: [...new Set(prices.map(p => p.region))]
     }
   }).filter(Boolean).sort((a, b) => (b?.variance || 0) - (a?.variance || 0))
@@ -272,7 +272,7 @@ function calculatePerformanceScore(vendorData: any): number {
 
 function getTopOffContractVendors(offContractOrders: ProcurementOrder[]) {
   const vendorOffContract = offContractOrders.reduce((acc, order) => {
-    const vendor = order.vendor
+    const vendor = order.vendor_name
     const spend = parseFloat(order.total_amount.toString())
     if (!acc[vendor]) {
       acc[vendor] = { spend: 0, orders: 0 }
