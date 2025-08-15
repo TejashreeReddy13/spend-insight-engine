@@ -163,11 +163,8 @@ export default {
         "slide-out-right": "slide-out-right 0.3s ease-out",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "bounce-subtle": "bounce 1s infinite",
-        "spin-slow": "spin 3s linear infinite",
-      },
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+        "spin-slow": "spin 3s linear infinite"
+      }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
