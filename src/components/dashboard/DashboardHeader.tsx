@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTheme } from "next-themes";
 import { 
   Download, 
   RefreshCw, 
@@ -12,12 +13,18 @@ import {
 } from "lucide-react";
 
 export function DashboardHeader() {
+  const { theme, setTheme } = useTheme();
+  
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <div className="dashboard-header px-4 sm:px-6 py-4 transition-all duration-300">
@@ -51,6 +58,16 @@ export function DashboardHeader() {
           </div>
           
           <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={toggleTheme}
+              className="text-nav-foreground hover:bg-nav-hover transition-all duration-300"
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+            
             <Button 
               variant="ghost" 
               size="sm"

@@ -40,6 +40,9 @@ export default function Dashboard() {
   );
   const isInDemoMode = !hasRealCredentials;
 
+  // Log current mode for testing purposes
+  console.log(isInDemoMode ? '🎭 Dashboard in DEMO MODE' : '🔗 Dashboard in LIVE MODE');
+
   const handleFiltersChange = (newFilters: FilterState) => {
     setFilters(newFilters);
     console.log("Filters updated:", newFilters);
