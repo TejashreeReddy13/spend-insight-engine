@@ -31,8 +31,14 @@ export default function Dashboard() {
     dateRange: "last-30-days"
   });
 
-  // Check if we're in demo mode (when Supabase isn't properly connected)
-  const isInDemoMode = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co';
+  // Check if we're in demo mode (consistent with hook logic)
+  const hasRealCredentials = !!(
+    import.meta.env.VITE_SUPABASE_URL && 
+    import.meta.env.VITE_SUPABASE_ANON_KEY &&
+    import.meta.env.VITE_SUPABASE_URL !== 'https://placeholder.supabase.co' &&
+    import.meta.env.VITE_SUPABASE_ANON_KEY !== 'placeholder-key'
+  );
+  const isInDemoMode = !hasRealCredentials;
 
   const handleFiltersChange = (newFilters: FilterState) => {
     setFilters(newFilters);
