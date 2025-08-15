@@ -76,6 +76,126 @@ interface Insight {
   status: string
 }
 
+// Demo data functions for when Supabase isn't connected
+function generateDemoData(): ProcurementAnalysis {
+  return {
+    summary: {
+      totalSpend: 12450000,
+      totalOrders: 1247,
+      uniqueVendors: 87,
+      maverickSpend: 1867500,
+      maverickPercentage: 15.0,
+      potentialSavings: 934250,
+      avgOrderValue: 9986.79
+    },
+    spendByVendor: [
+      { vendor: "Global Supply Co", spend: 2490000, percentage: 20.0 },
+      { vendor: "Tech Solutions Inc", spend: 1743000, percentage: 14.0 },
+      { vendor: "Office Essentials Ltd", spend: 1494000, percentage: 12.0 },
+      { vendor: "Industrial Equipment Co", spend: 1245000, percentage: 10.0 },
+      { vendor: "Digital Services Group", spend: 996000, percentage: 8.0 }
+    ],
+    spendByCategory: [
+      { category: "IT Equipment", spend: 3735000, percentage: 30.0 },
+      { category: "Office Supplies", spend: 2490000, percentage: 20.0 },
+      { category: "Professional Services", spend: 1867500, percentage: 15.0 },
+      { category: "Facilities", spend: 1494000, percentage: 12.0 },
+      { category: "Marketing", spend: 1245000, percentage: 10.0 }
+    ],
+    spendByRegion: [
+      { region: "North America", spend: 4980000, percentage: 40.0 },
+      { region: "Europe", spend: 3735000, percentage: 30.0 },
+      { region: "Asia Pacific", spend: 2490000, percentage: 20.0 },
+      { region: "Latin America", spend: 1245000, percentage: 10.0 }
+    ],
+    priceVariance: [
+      {
+        item: "Laptop Computer",
+        avgPrice: 1250.00,
+        minPrice: 1100.00,
+        maxPrice: 1450.00,
+        variance: 28.0,
+        totalQuantity: 150,
+        vendors: ["Tech Solutions Inc", "Global Supply Co"],
+        regions: ["North America", "Europe"]
+      },
+      {
+        item: "Office Chair",
+        avgPrice: 320.00,
+        minPrice: 275.00,
+        maxPrice: 385.00,
+        variance: 34.4,
+        totalQuantity: 200,
+        vendors: ["Office Essentials Ltd", "Facility Pros"],
+        regions: ["North America", "Asia Pacific"]
+      }
+    ],
+    topVendors: [
+      {
+        vendor: "Global Supply Co",
+        spend: 2490000,
+        orders: 125,
+        avgDeliveryScore: 4.2,
+        offContractPercentage: 12.0,
+        performanceScore: 87.5
+      },
+      {
+        vendor: "Tech Solutions Inc",
+        spend: 1743000,
+        orders: 89,
+        avgDeliveryScore: 4.5,
+        offContractPercentage: 8.0,
+        performanceScore: 92.0
+      }
+    ],
+    maverickAnalysis: {
+      offContractSpend: 1867500,
+      offContractPercentage: 15.0,
+      offContractOrders: 187,
+      potentialSavings: 280125,
+      topOffContractVendors: [
+        {
+          vendor: "Quick Office Supply",
+          offContractSpend: 456000,
+          offContractOrders: 45
+        },
+        {
+          vendor: "Emergency IT Services",
+          offContractSpend: 312000,
+          offContractOrders: 28
+        }
+      ]
+    }
+  }
+}
+
+function generateDemoInsights(): Insight[] {
+  return [
+    {
+      id: "1",
+      title: "Vendor Consolidation Opportunity",
+      description: "Consolidating purchases with top 3 vendors could yield 12% cost savings",
+      potentialSaving: 1494000,
+      priority: "high",
+      category: "vendor-management",
+      implementationTime: "3-6 months",
+      impact: "high",
+      status: "pending"
+    },
+    {
+      id: "2", 
+      title: "Contract Renegotiation",
+      description: "IT equipment contracts due for renewal with potential 8% savings",
+      potentialSaving: 298800,
+      priority: "medium",
+      category: "contract-optimization",
+      implementationTime: "1-3 months",
+      impact: "medium",
+      status: "pending"
+    }
+  ]
+}
+
 export function useProcurementData() {
   const [data, setData] = useState<ProcurementAnalysis | null>(null)
   const [insights, setInsights] = useState<Insight[]>([])
@@ -86,6 +206,18 @@ export function useProcurementData() {
     try {
       setLoading(true)
       setError(null)
+
+      // Check if Supabase is properly connected
+      const hasRealCredentials = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_URL !== 'https://placeholder.supabase.co'
+      
+      if (!hasRealCredentials) {
+        // Return demo data when Supabase isn't connected
+        const demoData = generateDemoData()
+        setData(demoData)
+        setInsights(generateDemoInsights())
+        setLoading(false)
+        return
+      }
 
       // Convert date range to actual dates
       const dateRanges: Record<string, { start: string; end: string }> = {
