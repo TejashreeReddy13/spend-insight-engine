@@ -10,12 +10,13 @@ interface ProcurementOrder {
   id: string
   vendor: string
   category: string
-  item: string
+  item_name: string
   quantity: number
   unit_price: number
+  total_amount: number
   region: string
   order_date: string
-  contract_status: string
+  contract_type: string
   delivery_score: number
 }
 
@@ -97,14 +98,14 @@ serve(async (req) => {
 
 function calculateAnalysis(orders: ProcurementOrder[]) {
   // Total spend analysis
-  const totalSpend = orders.reduce((sum, order) => sum + (order.quantity * order.unit_price), 0)
+  const totalSpend = orders.reduce((sum, order) => sum + parseFloat(order.total_amount.toString()), 0)
   const totalOrders = orders.length
   const uniqueVendors = new Set(orders.map(o => o.vendor)).size
 
   // Spend by vendor
   const vendorSpend = orders.reduce((acc, order) => {
     const vendor = order.vendor
-    const spend = order.quantity * order.unit_price
+    const spend = parseFloat(order.total_amount.toString())
     if (!acc[vendor]) {
       acc[vendor] = { 
         spend: 0, 
@@ -118,7 +119,7 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
     acc[vendor].orders += 1
     acc[vendor].avgDeliveryScore += order.delivery_score
     
-    if (order.contract_status === 'On Contract') {
+    if (order.contract_type === 'contract') {
       acc[vendor].onContractSpend += spend
     } else {
       acc[vendor].offContractSpend += spend
@@ -136,7 +137,7 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
   // Spend by category
   const categorySpend = orders.reduce((acc, order) => {
     const category = order.category
-    const spend = order.quantity * order.unit_price
+    const spend = parseFloat(order.total_amount.toString())
     acc[category] = (acc[category] || 0) + spend
     return acc
   }, {} as Record<string, number>)
@@ -144,14 +145,14 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
   // Spend by region
   const regionSpend = orders.reduce((acc, order) => {
     const region = order.region
-    const spend = order.quantity * order.unit_price
+    const spend = parseFloat(order.total_amount.toString())
     acc[region] = (acc[region] || 0) + spend
     return acc
   }, {} as Record<string, number>)
 
   // Price variance analysis
   const itemPrices = orders.reduce((acc, order) => {
-    const item = order.item
+    const item = order.item_name
     if (!acc[item]) {
       acc[item] = []
     }
@@ -188,8 +189,8 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
   }).filter(Boolean).sort((a, b) => (b?.variance || 0) - (a?.variance || 0))
 
   // Maverick spend analysis
-  const offContractOrders = orders.filter(o => o.contract_status === 'Off Contract')
-  const maverickSpend = offContractOrders.reduce((sum, order) => sum + (order.quantity * order.unit_price), 0)
+  const offContractOrders = orders.filter(o => o.contract_type === 'maverick')
+  const maverickSpend = offContractOrders.reduce((sum, order) => sum + parseFloat(order.total_amount.toString()), 0)
   const maverickPercentage = (maverickSpend / totalSpend) * 100
   
   // Estimate potential savings (assume 15% savings on off-contract items)
@@ -198,8 +199,8 @@ function calculateAnalysis(orders: ProcurementOrder[]) {
   // Calculate additional potential savings from price variance
   const potentialVarianceSavings = priceVarianceAnalysis.slice(0, 10).reduce((sum, item) => {
     if (!item) return sum
-    const avgOrder = orders.filter(o => o.item === item.item)
-    const totalItemSpend = avgOrder.reduce((s, o) => s + (o.quantity * o.unit_price), 0)
+    const avgOrder = orders.filter(o => o.item_name === item.item)
+    const totalItemSpend = avgOrder.reduce((s, o) => s + parseFloat(o.total_amount.toString()), 0)
     // Assume 10% savings if all purchases were at minimum price
     return sum + (totalItemSpend * 0.1)
   }, 0)
@@ -272,7 +273,7 @@ function calculatePerformanceScore(vendorData: any): number {
 function getTopOffContractVendors(offContractOrders: ProcurementOrder[]) {
   const vendorOffContract = offContractOrders.reduce((acc, order) => {
     const vendor = order.vendor
-    const spend = order.quantity * order.unit_price
+    const spend = parseFloat(order.total_amount.toString())
     if (!acc[vendor]) {
       acc[vendor] = { spend: 0, orders: 0 }
     }
