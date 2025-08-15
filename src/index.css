@@ -74,32 +74,17 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    @apply bg-background text-foreground;
   }
 }
 
 @layer components {
   .dashboard-container {
-    @apply min-h-screen;
+    @apply min-h-screen bg-background;
   }
 
   .dashboard-card {
-    @apply transition-all duration-300 hover:shadow-lg border border-border/50 bg-card rounded-lg;
-  }
-
-  .chart-container {
-    @apply dashboard-card p-6;
+    @apply bg-card border border-border rounded-lg p-4;
   }
 
   .kpi-grid {
@@ -108,25 +93,5 @@
 
   .chart-grid {
     @apply grid gap-6 grid-cols-1 lg:grid-cols-2;
-  }
-
-  .kpi-card {
-    @apply relative overflow-hidden border-t-4 border-primary;
-  }
-
-  .loading-overlay {
-    @apply absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10;
-  }
-
-  .filter-badge {
-    @apply transition-all duration-200 hover:scale-105;
-  }
-
-  .insight-card {
-    @apply relative overflow-hidden transition-all duration-300;
-  }
-
-  .export-button {
-    @apply relative overflow-hidden transition-all duration-300;
   }
 }
