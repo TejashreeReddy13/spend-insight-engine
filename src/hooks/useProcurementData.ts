@@ -125,7 +125,7 @@ export function useProcurementData() {
 
       // Call analyze-procurement edge function
       const { data: analysisData, error: analysisError } = await supabase.functions.invoke(
-        'analyze-procurement',
+        'analyze-procurement?' + params.toString(),
         {
           method: 'GET',
           headers: {
