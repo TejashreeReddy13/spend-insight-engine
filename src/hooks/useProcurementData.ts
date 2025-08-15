@@ -212,12 +212,15 @@ export function useProcurementData() {
       
       if (!hasRealCredentials) {
         // Return demo data when Supabase isn't connected
+        console.log('🎭 Dashboard running in DEMO MODE - using sample data. Connect Supabase integration for live data.');
         const demoData = generateDemoData()
         setData(demoData)
         setInsights(generateDemoInsights())
         setLoading(false)
         return
       }
+
+      console.log('🔗 Dashboard running in LIVE MODE - fetching data from Supabase.');
 
       // Convert date range to actual dates
       const dateRanges: Record<string, { start: string; end: string }> = {

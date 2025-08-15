@@ -4,6 +4,7 @@ import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
 import { SpendOverview } from "@/components/dashboard/SpendOverview";
 import { PriceVarianceAnalysis } from "@/components/dashboard/PriceVarianceAnalysis";
 import { CostSavingsInsights } from "@/components/dashboard/CostSavingsInsights";
+import { DemoBanner } from "@/components/dashboard/DemoBanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { 
@@ -30,9 +31,11 @@ export default function Dashboard() {
     dateRange: "last-30-days"
   });
 
+  // Check if we're in demo mode (when Supabase isn't properly connected)
+  const isInDemoMode = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co';
+
   const handleFiltersChange = (newFilters: FilterState) => {
     setFilters(newFilters);
-    // In a real app, this would trigger data refetch with new filters
     console.log("Filters updated:", newFilters);
   };
 
@@ -41,6 +44,7 @@ export default function Dashboard() {
       <DashboardHeader />
       
       <main className="px-4 sm:px-6 py-6 space-y-6 max-w-7xl mx-auto">
+        <DemoBanner isVisible={isInDemoMode} />
         <DashboardFilters onFiltersChange={handleFiltersChange} />
         
         <Tabs defaultValue="overview" className="space-y-6">
