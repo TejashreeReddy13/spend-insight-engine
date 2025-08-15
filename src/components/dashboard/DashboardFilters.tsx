@@ -55,7 +55,9 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
   );
 
   const updateFilter = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...filters, [key]: value };
+    // Convert "all" back to empty string for the actual filter logic  
+    const filterValue = value === "all" ? "" : value;
+    const newFilters = { ...filters, [key]: filterValue };
     setFilters(newFilters);
     onFiltersChange(newFilters);
   };
@@ -87,12 +89,12 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Select value={filters.vendor} onValueChange={(value) => updateFilter("vendor", value)}>
+          <Select value={filters.vendor || "all"} onValueChange={(value) => updateFilter("vendor", value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select Vendor" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Vendors</SelectItem>
+            <SelectContent className="z-50 bg-popover border-border shadow-lg">
+              <SelectItem value="all">All Vendors</SelectItem>
               {vendorOptions.map((vendor) => (
                 <SelectItem key={vendor} value={vendor}>
                   {vendor}
@@ -101,12 +103,12 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
             </SelectContent>
           </Select>
 
-          <Select value={filters.category} onValueChange={(value) => updateFilter("category", value)}>
+          <Select value={filters.category || "all"} onValueChange={(value) => updateFilter("category", value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+            <SelectContent className="z-50 bg-popover border-border shadow-lg">
+              <SelectItem value="all">All Categories</SelectItem>
               {categoryOptions.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
@@ -115,12 +117,12 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
             </SelectContent>
           </Select>
 
-          <Select value={filters.region} onValueChange={(value) => updateFilter("region", value)}>
+          <Select value={filters.region || "all"} onValueChange={(value) => updateFilter("region", value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select Region" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Regions</SelectItem>
+            <SelectContent className="z-50 bg-popover border-border shadow-lg">
+              <SelectItem value="all">All Regions</SelectItem>
               {regionOptions.map((region) => (
                 <SelectItem key={region} value={region}>
                   {region}
@@ -133,7 +135,7 @@ export function DashboardFilters({ onFiltersChange }: DashboardFiltersProps) {
             <SelectTrigger>
               <SelectValue placeholder="Select Date Range" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="z-50 bg-popover border-border shadow-lg">
               <SelectItem value="last-7-days">Last 7 Days</SelectItem>
               <SelectItem value="last-30-days">Last 30 Days</SelectItem>
               <SelectItem value="last-90-days">Last 90 Days</SelectItem>
