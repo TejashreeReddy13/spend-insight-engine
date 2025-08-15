@@ -2,89 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Enterprise BI Dashboard Design System
-Professional procurement analytics with blue/teal trust palette and green savings accents
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* Background & Surface Colors */
     --background: 220 15% 97%;
     --foreground: 215 25% 20%;
-    --dashboard-bg: 220 12% 95%;
-    
-    /* Card & Surface Variants */
     --card: 0 0% 100%;
     --card-foreground: 215 25% 20%;
-    --card-secondary: 220 8% 98%;
-    
-    /* Navigation & Sidebar */
-    --nav-bg: 215 25% 20%;
-    --nav-foreground: 0 0% 100%;
-    --nav-hover: 215 25% 25%;
-    
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 20%;
-
-    /* Primary Trust Blue */
     --primary: 210 85% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 210 70% 55%;
-    --primary-dark: 210 85% 35%;
-    
-    /* Teal Accent */
-    --teal: 180 65% 45%;
-    --teal-light: 180 55% 55%;
-    --teal-dark: 180 65% 35%;
-
-    /* Success Green (Savings) */
-    --success: 145 65% 45%;
-    --success-light: 145 55% 55%;
-    --success-dark: 145 65% 35%;
-    --success-foreground: 0 0% 100%;
-    
-    /* Warning & Alert Colors */
-    --warning: 35 85% 55%;
-    --warning-light: 35 75% 65%;
-    --warning-foreground: 0 0% 100%;
-    
-    --danger: 0 75% 55%;
-    --danger-light: 0 65% 65%;
-    --danger-foreground: 0 0% 100%;
-
-    /* Secondary & Muted */
     --secondary: 220 8% 95%;
     --secondary-foreground: 215 25% 25%;
-    --secondary-hover: 220 8% 92%;
-
     --muted: 220 8% 92%;
     --muted-foreground: 215 15% 45%;
-    --muted-hover: 220 8% 88%;
-
     --accent: 210 15% 92%;
     --accent-foreground: 215 25% 25%;
-
     --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
-
-    /* Borders & Inputs */
     --border: 220 8% 88%;
-    --border-light: 220 5% 92%;
     --input: 220 8% 95%;
-    --input-border: 220 8% 85%;
     --ring: 210 85% 45%;
-
-    /* Chart Colors for Data Visualization */
+    --radius: 0.75rem;
     --chart-1: 210 85% 45%;
     --chart-2: 180 65% 45%;
     --chart-3: 145 65% 45%;
     --chart-4: 35 85% 55%;
     --chart-5: 260 65% 55%;
-    --chart-6: 15 75% 55%;
-
-    --radius: 0.75rem;
-
+    --success: 145 65% 45%;
+    --warning: 35 85% 55%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -93,47 +39,25 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    
-    /* Enhanced Dashboard Styles */
-    --dashboard-gradient: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1));
-    --chart-gradient-1: linear-gradient(135deg, hsl(var(--chart-1)), hsl(var(--chart-1) / 0.8));
-    --chart-gradient-2: linear-gradient(135deg, hsl(var(--chart-2)), hsl(var(--chart-2) / 0.8));
-    --chart-gradient-3: linear-gradient(135deg, hsl(var(--chart-3)), hsl(var(--chart-3) / 0.8));
-    --chart-gradient-4: linear-gradient(135deg, hsl(var(--chart-4)), hsl(var(--chart-4) / 0.8));
-    --chart-gradient-5: linear-gradient(135deg, hsl(var(--chart-5)), hsl(var(--chart-5) / 0.8));
-    
-    /* Animation Variables */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-elegant: 0 4px 20px -2px hsl(var(--primary) / 0.1);
-    --shadow-hover: 0 8px 30px -4px hsl(var(--primary) / 0.15);
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -168,21 +92,18 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Dashboard Layout Enhancements */
   .dashboard-container {
+    @apply min-h-screen;
     background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--secondary) / 0.3));
-    min-height: 100vh;
   }
 
   .dashboard-card {
-    @apply transition-all duration-300 hover:shadow-lg border-border/50;
-    background: hsl(var(--card));
-    backdrop-filter: blur(10px);
+    @apply transition-all duration-300 hover:shadow-lg border-border/50 bg-card backdrop-blur;
   }
 
   .dashboard-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+    @apply -translate-y-0.5;
+    box-shadow: 0 8px 30px -4px hsl(var(--primary) / 0.15);
   }
 
   .chart-container {
@@ -198,40 +119,33 @@ All colors MUST be HSL.
     @apply grid gap-6 lg:grid-cols-2;
   }
 
-  /* Enhanced KPI Cards */
   .kpi-card {
     @apply relative overflow-hidden;
   }
 
   .kpi-card::before {
+    @apply absolute top-0 left-0 right-0 h-1 bg-primary;
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--chart-gradient-1);
   }
 
   .kpi-card.success::before {
-    background: hsl(var(--success));
+    @apply bg-green-500;
   }
 
   .kpi-card.warning::before {
-    background: hsl(var(--warning));
+    @apply bg-yellow-500;
   }
 
   .kpi-card.danger::before {
-    background: hsl(var(--destructive));
+    @apply bg-red-500;
   }
 
-  /* Chart Animations */
   .chart-container .recharts-wrapper {
     animation: fade-in 0.6s ease-out;
   }
 
   .chart-container .recharts-pie-sector {
-    transition: var(--transition-fast);
+    @apply transition-all duration-150;
   }
 
   .chart-container .recharts-pie-sector:hover {
@@ -240,19 +154,17 @@ All colors MUST be HSL.
   }
 
   .chart-container .recharts-bar {
-    transition: var(--transition-fast);
+    @apply transition-all duration-150;
   }
 
   .chart-container .recharts-bar:hover {
     filter: brightness(1.1);
   }
 
-  /* Loading States */
   .loading-overlay {
     @apply absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10;
   }
 
-  /* Responsive Design */
   @media (max-width: 768px) {
     .kpi-grid {
       @apply grid-cols-1 sm:grid-cols-2;
@@ -267,7 +179,6 @@ All colors MUST be HSL.
     }
   }
 
-  /* Filter Enhancements */
   .filter-badge {
     @apply transition-all duration-200 hover:scale-105;
   }
@@ -276,29 +187,27 @@ All colors MUST be HSL.
     box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
   }
 
-  /* Insight Cards */
   .insight-card {
     @apply relative overflow-hidden transition-all duration-300;
   }
 
   .insight-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: var(--shadow-hover);
+    @apply -translate-y-1 scale-105;
+    box-shadow: 0 8px 30px -4px hsl(var(--primary) / 0.15);
   }
 
   .insight-card.priority-high {
-    border-left: 4px solid hsl(var(--destructive));
+    @apply border-l-4 border-red-500;
   }
 
   .insight-card.priority-medium {
-    border-left: 4px solid hsl(var(--warning));
+    @apply border-l-4 border-yellow-500;
   }
 
   .insight-card.priority-low {
-    border-left: 4px solid hsl(var(--success));
+    @apply border-l-4 border-green-500;
   }
 
-  /* Export Button Enhancements */
   .export-button {
     @apply relative overflow-hidden transition-all duration-300;
   }
@@ -308,14 +217,10 @@ All colors MUST be HSL.
   }
 
   .export-button::before {
+    @apply absolute top-0 w-full h-full transition-all duration-500;
     content: '';
-    position: absolute;
-    top: 0;
     left: -100%;
-    width: 100%;
-    height: 100%;
     background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
-    transition: left 0.5s;
   }
 
   .export-button:hover::before {
