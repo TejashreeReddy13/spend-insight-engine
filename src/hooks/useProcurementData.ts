@@ -311,7 +311,7 @@ export function useProcurementData() {
           },
           companyInfo: {
             name: "Your Company",
-            logo: "/company-logo.png", // Add your company logo
+            logo: import.meta.env.BASE_URL + "placeholder.svg", // Use available placeholder
             reportTitle: `Procurement Analysis Report - ${currentDate}`
           }
         }
