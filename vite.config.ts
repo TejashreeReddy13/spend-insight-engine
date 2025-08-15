@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   build: {
-    // Optimize for production
-    minify: 'terser',
+    // Optimize for production but use esbuild instead of terser
+    minify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
       output: {

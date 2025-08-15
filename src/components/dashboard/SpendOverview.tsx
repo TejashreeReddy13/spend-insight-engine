@@ -22,7 +22,7 @@ export function SpendOverview({ filters }: SpendOverviewProps) {
 
   useEffect(() => {
     fetchData(filters);
-  }, [filters, fetchData]);
+  }, [filters.vendor, filters.category, filters.region, filters.dateRange, fetchData]);
   const formatCurrency = (value: number) => `$${(value / 1000000).toFixed(1)}M`;
   
   if (loading) {

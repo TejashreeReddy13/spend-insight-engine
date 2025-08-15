@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 
 interface FilterState {
@@ -202,7 +202,7 @@ export function useProcurementData() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchData = async (filters: FilterState) => {
+  const fetchData = useCallback(async (filters: FilterState) => {
     try {
       setLoading(true)
       setError(null)
@@ -291,7 +291,7 @@ export function useProcurementData() {
     } finally {
       setLoading(false)
     }
-  }
+  }, []) // Empty dependency array since this function doesn't depend on any props or state
 
   const exportReport = async (format: 'pdf' | 'excel') => {
     if (!data || !insights) return
